@@ -13,7 +13,9 @@ import (
 // lista de "objetos" de usuários para definir grupos de acesso
 var admins = []m.User{{User: "admin.admin", Password: "123"}}
 var users = []m.User{{User: "jose.teste", Password: "123"}}
+var usuarioAtual m.User
 var chamados = []m.Chamado{}
+var sigla = "HP-"
 
 func main() {
 
@@ -94,6 +96,11 @@ func main() {
 						fmt.Scan(&abrir)
 						if abrir == "sim" {
 							chamado.Status = "aberto"
+							chamado.Codigo = gerarCodigo()
+							agora := t.Now().Local()
+							dataFormatada := agora.Format("01/01/2000")
+							chamado.CreatedAt = dataFormatada + " - " + string(agora.Hour()) + ":" + string(agora.Minute())
+							chamado.CreatedBy = usuarioAtual
 							chamados = append(chamados, *chamado)
 							fmt.Println("Chamado aberto com sucesso")
 						} else {
@@ -104,6 +111,7 @@ func main() {
 					//append(chamados, c.)
 				} else if opcao == 3 {
 					logaut = 1
+					usuarioAtual = m.User{}
 					break
 				}
 			}
@@ -122,12 +130,14 @@ func validacao() string {
 	for indice := range admins {
 		if writeUser == admins[indice].User && writePassword == admins[indice].Password {
 			fmt.Println("Lofin suceful")
+			usuarioAtual = admins[indice]
 			return "admin"
 		}
 	}
 	for indice := range users {
 		if writeUser == users[indice].User && writePassword == users[indice].Password {
 			fmt.Println("Logado com sucesso")
+			usuarioAtual = users[indice]
 			return "user"
 		}
 	}
@@ -148,6 +158,10 @@ func chamadosAbertos() (bool, []m.Chamado) {
 		}
 		return true, chamadosAbertos
 	}
+}
+
+func gerarCodigo() string {
+	return sigla + string((len(chamados) + 1)) + string(t.Now().Year())
 }
 
 //func findByCod(cod string) (bool, m.Chamado) {
