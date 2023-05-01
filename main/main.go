@@ -64,6 +64,27 @@ func main() {
 				var opcao int
 				fmt.Scan("\ngigite a opção que deseja:", &opcao)
 				if opcao == 2 {
+					abrir := ""
+					if abrir != "sim" {
+						var chamado *m.Chamado
+						chamado = new(m.Chamado)
+
+						fmt.Println("Digite o titulo do chamado")
+						fmt.Scan(&chamado.Titulo)
+
+						fmt.Println("Digite a descrição do chamado")
+						fmt.Scan(&chamado.Descricao)
+
+						fmt.Println("Deseja abrir esse chamado?: \nTitulo:", chamado.Titulo, ", \nDescricao: '", chamado.Descricao, "'")
+						fmt.Scan(&abrir)
+						if abrir == "sim" {
+							chamados = append(chamados, *chamado)
+							fmt.Println("Chamado aberto com sucesso")
+						} else {
+							fmt.Println("Deseja parar de abrir chamado?")
+							fmt.Scan(&abrir)
+						}
+					}
 					//append(chamados, c.)
 				}
 			}
