@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"os"
+	conv "strconv"
 
 	//c "dit/paraestudo/src/helpdesk/controller"
 	"fmt"
@@ -38,7 +39,12 @@ func main() {
 					} else {
 						fmt.Println("--> Todos os chamados")
 						for index := range chamados {
-							fmt.Println("Codigo: ", listaChamadosAbertos[index].Codigo, "\nTitulo: ", listaChamadosAbertos[index].Titulo, "\nDescricao: ", listaChamadosAbertos[index].Descricao, "\n-")
+							fmt.Println("Codigo: ", listaChamadosAbertos[index].Codigo,
+								"\nTitulo: ", listaChamadosAbertos[index].Titulo,
+								"\nDescricao: ", listaChamadosAbertos[index].Descricao,
+								"\nCriado por: ", listaChamadosAbertos[index].CreatedBy.User,
+								"\n Data de criação: ", listaChamadosAbertos[index].CreatedAt,
+								"\n-")
 						}
 
 					}
@@ -98,8 +104,8 @@ func main() {
 							chamado.Status = "aberto"
 							chamado.Codigo = gerarCodigo()
 							agora := t.Now().Local()
-							dataFormatada := agora.Format("01/01/2000")
-							chamado.CreatedAt = dataFormatada + " - " + string(agora.Hour()) + ":" + string(agora.Minute())
+							dataFormatada := agora.Format("02/01/2006 15:04:05")
+							chamado.CreatedAt = dataFormatada
 							chamado.CreatedBy = usuarioAtual
 							chamados = append(chamados, *chamado)
 							fmt.Println("Chamado aberto com sucesso")
@@ -161,7 +167,9 @@ func chamadosAbertos() (bool, []m.Chamado) {
 }
 
 func gerarCodigo() string {
-	return sigla + string((len(chamados) + 1)) + string(t.Now().Year())
+	quantidade := (len(chamados) + 1)
+	ano := t.Now().Year()
+	return sigla + "00" + conv.Itoa(quantidade) + "-" + conv.Itoa(ano)
 }
 
 //func findByCod(cod string) (bool, m.Chamado) {
