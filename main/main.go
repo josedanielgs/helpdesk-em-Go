@@ -18,28 +18,28 @@ func main() {
 	for login < 1 {
 		fmt.Println("por favor faça login:")
 		grupoUsuario := validacao()
-		if grupoUsuario == "admin" {
-			fmt.Println("1. ver chamados abertos\n2. solucionar chamado\n3. direcionar chamado")
-			var opcao int
-			fmt.Scan("\ngigite a opção que deseja:", &opcao)
-			if opcao == 1 {
-				chamadosAbertos := []m.Chamado{}
-				for indice := range chamados {
-					if chamados[indice].Status == "aberto" {
-						chamadosAbertos = append(chamadosAbertos, chamados[indice])
-					}
+		logaut := 0
+		for logaut != 1 {
+			if grupoUsuario == "admin" {
+				fmt.Println("1. ver chamados abertos\n2. solucionar chamado\n3. direcionar chamado\n4. logaut")
+				var opcao int
+				fmt.Println("\ngigite a opção que deseja:")
+				fmt.Scan(&opcao)
+				if opcao == 1 {
+
+					fmt.Println("Todos os chamados abertos são: ", chamadosAbertos)
+				} else if opcao == 2 {
+
 				}
-				fmt.Println("Todos os chamados abertos são: ", chamadosAbertos)
-			}
-		} else if grupoUsuario == "user" {
-			fmt.Println("1. ver seus chamados abertos\n2. abrir chamado")
-			var opcao int
-			fmt.Scan("\ngigite a opção que deseja:", &opcao)
-			if opcao == 2 {
-				//append(chamados, c.)
+			} else if grupoUsuario == "user" {
+				fmt.Println("1. ver seus chamados abertos\n2. abrir chamado\n3. logaut")
+				var opcao int
+				fmt.Scan("\ngigite a opção que deseja:", &opcao)
+				if opcao == 2 {
+					//append(chamados, c.)
+				}
 			}
 		}
-
 	}
 
 }
@@ -66,4 +66,18 @@ func validacao() string {
 	fmt.Println("Login ou senha incorretor")
 	return "null"
 
+}
+
+func chamadosAbertos() (bool, []m.Chamado) {
+	chamadosAbertos := []m.Chamado{}
+	if len(chamadosAbertos) == 0 {
+		return false, chamadosAbertos
+	} else {
+		for indice := range chamados {
+			if chamados[indice].Status == "aberto" {
+				chamadosAbertos = append(chamadosAbertos, chamados[indice])
+			}
+		}
+		return true, chamadosAbertos
+	}
 }
