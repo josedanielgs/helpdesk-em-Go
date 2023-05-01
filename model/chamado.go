@@ -10,4 +10,6 @@ type Chamado struct {
 	CreatedBy     User
 	Classificacao string
 	Status        string
+	Solucao       string
+	DataSolucao   string
 }

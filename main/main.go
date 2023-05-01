@@ -4,6 +4,7 @@ import (
 	//c "dit/paraestudo/src/helpdesk/controller"
 	"fmt"
 	m "helpdesk/model"
+	t "time"
 )
 
 // lista de "objetos" de usuários para definir grupos de acesso
@@ -26,10 +27,37 @@ func main() {
 				fmt.Println("\ngigite a opção que deseja:")
 				fmt.Scan(&opcao)
 				if opcao == 1 {
-
-					fmt.Println("Todos os chamados abertos são: ", chamadosAbertos)
+					seExisteChamadosAbertos, listaChamadosAbertos := chamadosAbertos()
+					if seExisteChamadosAbertos {
+						fmt.Println("Não há chamados abertos")
+					} else {
+						fmt.Println("Todos os chamados abertos são: ", listaChamadosAbertos)
+					}
 				} else if opcao == 2 {
-
+					seExisteChamadosAbertos, listaChamadosAbertos := chamadosAbertos()
+					if seExisteChamadosAbertos {
+						var codigo string
+						fmt.Println("Digite o codigo do chamado que deseja solucionar:")
+						fmt.Scan(&codigo)
+						for indice := range listaChamadosAbertos {
+							if listaChamadosAbertos[indice].Codigo == codigo {
+								fmt.Println("deseja solucionar o seguinte chamado?:", listaChamadosAbertos[indice])
+								var resp string
+								fmt.Scan(&resp)
+								if resp == "sim" {
+									fmt.Println("Escreva a solução:")
+									fmt.Scan(&chamados[indice].Solucao)
+									agora := t.Now().Local()
+									dataFormatada := agora.Format("01/01/2000")
+									chamados[indice].DataSolucao = dataFormatada
+									chamados[indice].Status = "solucionado"
+									fmt.Println("Chamado '", chamados[indice].Titulo, "' solucionado")
+								} else {
+									break
+								}
+							}
+						}
+					}
 				}
 			} else if grupoUsuario == "user" {
 				fmt.Println("1. ver seus chamados abertos\n2. abrir chamado\n3. logaut")
@@ -80,4 +108,13 @@ func chamadosAbertos() (bool, []m.Chamado) {
 		}
 		return true, chamadosAbertos
 	}
+}
+
+func findByCod(cod string) (bool, m.Chamado) {
+	for indice := range chamados {
+		if chamados[indice].Codigo == cod {
+			return true, chamados[indice]
+		}
+	}
+	return false, _
 }
