@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bufio"
+	"os"
+
 	//c "dit/paraestudo/src/helpdesk/controller"
 	"fmt"
 	m "helpdesk/model"
@@ -28,10 +31,14 @@ func main() {
 				fmt.Scan(&opcao)
 				if opcao == 1 {
 					seExisteChamadosAbertos, listaChamadosAbertos := chamadosAbertos()
-					if seExisteChamadosAbertos {
+					if !seExisteChamadosAbertos {
 						fmt.Println("Não há chamados abertos")
 					} else {
-						fmt.Println("Todos os chamados abertos são: ", listaChamadosAbertos)
+						fmt.Println("--> Todos os chamados")
+						for index := range chamados {
+							fmt.Println("Codigo: ", listaChamadosAbertos[index].Codigo, "\nTitulo: ", listaChamadosAbertos[index].Titulo, "\nDescricao: ", listaChamadosAbertos[index].Descricao, "\n-")
+						}
+
 					}
 				} else if opcao == 2 {
 					seExisteChamadosAbertos, listaChamadosAbertos := chamadosAbertos()
@@ -41,7 +48,7 @@ func main() {
 						fmt.Scan(&codigo)
 						for indice := range listaChamadosAbertos {
 							if listaChamadosAbertos[indice].Codigo == codigo {
-								fmt.Println("deseja solucionar o seguinte chamado?:", listaChamadosAbertos[indice])
+								fmt.Println("deseja solucionar o seguinte chamado?:", listaChamadosAbertos[indice], "--\n(sim/não):")
 								var resp string
 								fmt.Scan(&resp)
 								if resp == "sim" {
@@ -62,22 +69,31 @@ func main() {
 			} else if grupoUsuario == "user" {
 				fmt.Println("1. ver seus chamados abertos\n2. abrir chamado\n3. logaut")
 				var opcao int
-				fmt.Scan("\ngigite a opção que deseja:", &opcao)
+				fmt.Println("Digite a opção que deseja:")
+				fmt.Scan(&opcao)
 				if opcao == 2 {
 					abrir := ""
 					if abrir != "sim" {
 						var chamado *m.Chamado
 						chamado = new(m.Chamado)
+						scanner := bufio.NewReader(os.Stdin)
 
 						fmt.Println("Digite o titulo do chamado")
-						fmt.Scan(&chamado.Titulo)
+						//fmt.Scan(&chamado.Titulo)
+						titulo, _ := scanner.ReadString('\n')
+						chamado.Titulo = titulo
+
+						//bufio.NewReader(os.Stdin).Reset(os.Stdin)
 
 						fmt.Println("Digite a descrição do chamado")
-						fmt.Scan(&chamado.Descricao)
+						//fmt.Scan(&chamado.Descricao)
+						descricao, _ := scanner.ReadString('\n')
+						chamado.Descricao = descricao
 
-						fmt.Println("Deseja abrir esse chamado?: \nTitulo:", chamado.Titulo, ", \nDescricao: '", chamado.Descricao, "'")
+						fmt.Println("\n --> Deseja abrir esse chamado?: \nTitulo:", chamado.Titulo, ", \nDescricao: '", chamado.Descricao, "'\n --\n(sim/não):")
 						fmt.Scan(&abrir)
 						if abrir == "sim" {
+							chamado.Status = "aberto"
 							chamados = append(chamados, *chamado)
 							fmt.Println("Chamado aberto com sucesso")
 						} else {
@@ -86,6 +102,9 @@ func main() {
 						}
 					}
 					//append(chamados, c.)
+				} else if opcao == 3 {
+					logaut = 1
+					break
 				}
 			}
 		}
@@ -118,9 +137,9 @@ func validacao() string {
 }
 
 func chamadosAbertos() (bool, []m.Chamado) {
-	chamadosAbertos := []m.Chamado{}
-	if len(chamadosAbertos) == 0 {
-		return false, chamadosAbertos
+	var chamadosAbertos = []m.Chamado{}
+	if len(chamados) == 0 {
+		return false, chamados
 	} else {
 		for indice := range chamados {
 			if chamados[indice].Status == "aberto" {
@@ -131,11 +150,11 @@ func chamadosAbertos() (bool, []m.Chamado) {
 	}
 }
 
-func findByCod(cod string) (bool, m.Chamado) {
-	for indice := range chamados {
-		if chamados[indice].Codigo == cod {
-			return true, chamados[indice]
-		}
-	}
-	return false, _
-}
+//func findByCod(cod string) (bool, m.Chamado) {
+//	for indice := range chamados {
+//		if chamados[indice].Codigo == cod {
+//			return true, chamados[indice]
+//		}
+//	}
+//	return false, _
+//}
